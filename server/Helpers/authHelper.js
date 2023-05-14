@@ -44,10 +44,13 @@ export class authHelper {
     async doSignup(detail){
         console.log("ddddddddddd");
         console.log(detail);
-        // const{firstName,lastName,phoneNumber,email,password}=detail
+        const{firstName,lastName,phoneNumber,email,password,role}=detail
         try{
+            if(detail.role==='student'){
+                const user = await User.create({firstName,lastName,phoneNumber,email,password,role})
+                return user
+            }
             const user = await User.create(detail)
-            // const token = createToken(user._id)
             return user
         }catch(err){
             const errors = handleErrors(err)

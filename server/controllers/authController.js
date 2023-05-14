@@ -21,10 +21,12 @@ export const userSignup=async(req,res)=>{
     try{
        
         const response = await doSignup(req.body)
+        console.log("kkkkk");
+        console.log(response);
         if(response._id){
             const token = createToken(response._id)
             res.cookie("token",token,{httpOnly:true});
-            res.status(201).json({response:response._id})
+            res.status(201).json({response:response})
         }else{
             res.status(201).json({response:response})
         }
@@ -39,7 +41,7 @@ export const userLogin=async(req,res)=>{
         const response = await doLogin(req.body)
         const token = createToken(response._id)
         res.cookie("token",token,{httpOnly:true});
-        res.status(201).json({response:response._id})
+        res.status(201).json({response:response,token})
     }catch(err){
         res.status(400).json({err})
     }

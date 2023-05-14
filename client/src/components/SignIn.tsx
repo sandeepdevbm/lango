@@ -15,6 +15,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from "react"
 import AxiosConfig from '../config/axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import Lottie from"lottie-react"
+import world from '../lottie/world.json'
+//redux
+// import { setDetails } from "../Redux/userSlice/userSlice";
+import{ setMentorDetails } from "../Redux/mentorSlice/mentorSlice"
+import{ setStudentDetails } from "../Redux/studentSlice/studentSlice"
+import { useDispatch } from 'react-redux'
 
 function Copyright(props: any) {
   return (
@@ -33,11 +41,23 @@ const theme = createTheme();
 
 export default function SignIn() {
 
+  const nonValid = (message:string) => toast(message)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   interface FormData {
     email: string;
     password: string;
+  }
+  interface Person {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string,
+    role: string,
+    qualification:string,
+    language:string
   }
 
   const [formState, setFormState] = useState<FormData>({
@@ -53,19 +73,50 @@ export default function SignIn() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let response = await AxiosConfig.post("/login", formState)
-    console.log(response.data);
+    let user = await AxiosConfig.post("/login", formState)
+    const accessToken  = user.data.toke
+    
+    if(user.data.response._id){
+      if(user.data.response.role==="mentor"){
+        const{_id, firstName, lastName, phoneNumber, email, role, qualification, language} : Person = user.data.response
+        dispatch(setMentorDetails({_id, firstName, lastName, phoneNumber, email, role, qualification, language, accessToken }))
+      }
+  
+      if(user.data.response.role==="student"){
+        const{_id, firstName, lastName, phoneNumber, email, role} : Person = user.data.response
+        dispatch(setStudentDetails({_id, firstName, lastName, phoneNumber, email, role, accessToken }))
+        setTimeout(() => {
+          navigate('/student')
+        }, 2000);
+      }
+      
+      nonValid("Successfully logged in")
+    }
+    if(user.data.response.email==='this email is not registered'){
+      nonValid(user.data.response.email)
+    }
+    if(user.data.response.password==='this password is incorrect'){
+      nonValid(user.data.response.password)
+    }
+    
+    console.log(user.data.response);
     
   }
 
   return (
     <ThemeProvider theme={theme}>
-        <div >
-      <Container component="main" maxWidth="xs" sx={{background:""}}>
+      <Box sx={{display:'flex',justifyContent:'center',marginTop:'1.5rem'}}>
+
+      <Box sx={{height:"38rem", width:'28rem',display:{xs: 'none', md: 'flex'}}}>
+      <Lottie style={{marginLeft:"5rem", height:"18rem", marginTop:"10rem"}}
+         animationData={world}/>
+      </Box> 
+<Box sx={{marginTop:'2rem'}}>
+      <Container component="main" maxWidth="xs"sx={{border: "1px solid black",borderRadius:'2.5rem'}} >
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 4,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -87,6 +138,7 @@ export default function SignIn() {
               autoComplete="email"
               autoFocus
             />
+            <ToastContainer />
             <TextField
               margin="normal"
               required
@@ -127,7 +179,8 @@ export default function SignIn() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-      </div>
+      </Box>
+      </Box>
     </ThemeProvider>
   );
 }

@@ -1,4 +1,6 @@
 import SignUp from '../components/SignUp'
+import Samp from '../samp'
+
 
 function SingUpPage() {
 

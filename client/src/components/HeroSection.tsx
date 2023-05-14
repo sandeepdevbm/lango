@@ -8,6 +8,9 @@ import {Backdrop} from '@mui/material';
 import Lottie from"lottie-react"
 import world from '../lottie/world.json'
 import people from '../lottie/people.json'
+import { useState } from "react";
+import { TextField, Button } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 
 interface HeroSectionPostProps {
@@ -23,7 +26,11 @@ interface HeroSectionPostProps {
 
 export default function HeroSection(props: HeroSectionPostProps) {
   const { post } = props;
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <Paper
@@ -36,7 +43,8 @@ export default function HeroSection(props: HeroSectionPostProps) {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundImage: `url(${post.image})`,
-        height:"30rem"
+        height:"30rem",
+        borderRadius:0
       }}
     >
       {/* Increase the priority of the hero background image */}
@@ -49,6 +57,14 @@ export default function HeroSection(props: HeroSectionPostProps) {
           right: 0,
           left: 0,
           backgroundColor: 'rgba(0,0,0,.3)',
+          backdropFilter: 'blur(1.2px)',
+              borderRadius: '4px',
+              '&::after': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                zIndex: '-1'
+              }
         }}
       />
       <Grid container>
@@ -58,20 +74,25 @@ export default function HeroSection(props: HeroSectionPostProps) {
               position: 'relative',
               p: { xs: 3, md: 6 },
               pr: { md: 0 },
-              backdropFilter: 'blur(1.2px)',
-              borderRadius: '4px',
-              '&::after': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                zIndex: '-1'
-              }
+              
             }}
           >
             <Typography component="h1" variant="h3" color="inherit" gutterBottom sx={{textShadow: '0 0 3px white'}} >
               {post.title}
             </Typography>
-            <Typography variant="h5" color="inherit" paragraph sx={{color:'',textShadow: '0 0 2px white'}} >
+            <TextField
+            sx={{background:"white", width:"20rem" ,borderRadius:'5px'}}
+              label="Search for your language"
+              variant="filled"
+              margin="normal"
+              onChange={handleSearchChange}
+              InputProps={{
+                endAdornment: (
+                  <SearchIcon sx={{ color: 'grey.500' }} />
+                ),
+              }}
+            />
+            <Typography variant="h5" color="inherit" paragraph sx={{color:'',textShadow: '0 0 2px white',mt:3}} >
               {post.description}
             </Typography>
             <Link variant="subtitle1" href="#">
@@ -80,7 +101,7 @@ export default function HeroSection(props: HeroSectionPostProps) {
           </Box>
         </Grid>
         <Box sx={{display: { xs: 'none', lg: 'flex' }}}>
-        <Lottie style={{marginLeft:"10rem", height:"10rem", marginTop:"21.4rem"}}
+        <Lottie style={{marginLeft:"5rem", height:"12rem", marginTop:"19.7rem"}}
          animationData={people}/>
         </Box>
       </Grid>
