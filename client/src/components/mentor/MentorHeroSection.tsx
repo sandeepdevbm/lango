@@ -6,13 +6,9 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import {Backdrop} from '@mui/material';
 import Lottie from"lottie-react"
-import world from '../lottie/world.json'
-import people from '../lottie/people.json'
 import { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import SearchBar from './SearchBar';
-
 
 interface HeroSectionPostProps {
   post: {
@@ -24,14 +20,12 @@ interface HeroSectionPostProps {
   };
 }
 
+function MentorHeroSection(props: HeroSectionPostProps) {
+ const { post } = props;
 
-export default function HeroSection(props: HeroSectionPostProps) {
-  const { post } = props;
-  const [searchTerm, setSearchTerm] = useState("");
+ const handleGetVerified = () => {
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+ }
 
   return (
     <Paper
@@ -48,7 +42,6 @@ export default function HeroSection(props: HeroSectionPostProps) {
         borderRadius:0
       }}
     >
-      {/* Increase the priority of the hero background image */}
       {<img style={{display:"none" }} src={post.image} alt={post.imageText} />}
       <Box
         sx={{
@@ -81,32 +74,22 @@ export default function HeroSection(props: HeroSectionPostProps) {
             <Typography component="h1" variant="h3" color="inherit" gutterBottom sx={{textShadow: '0 0 3px white'}} >
               {post.title}
             </Typography>
-            <SearchBar/>
-            {/* <TextField
-            sx={{background:"white", width:"20rem" ,borderRadius:'5px'}}
-              label="Search for your language"
-              variant="filled"
-              margin="normal"
-              onChange={handleSearchChange}
-              InputProps={{
-                endAdornment: (
-                  <SearchIcon sx={{ color: 'grey.500' }} />
-                ),
-              }}
-            /> */}
             <Typography variant="h5" color="inherit" paragraph sx={{color:'',textShadow: '0 0 2px white',mt:3}} >
               {post.description}
             </Typography>
-            <Link variant="subtitle1" href="#">
+            {/* <Link variant="subtitle1" href="#">
               {post.linkText}
-            </Link>
+            </Link> */}
+            <Button variant="contained" sx={{backgroundColor:'#F4EEE0', color:'#393646', fontStyle:'italic'}} onClick={handleGetVerified}>
+                {post.linkText}
+            </Button>
           </Box>
         </Grid>
         <Box sx={{display: { xs: 'none', lg: 'flex' }}}>
-        <Lottie style={{marginLeft:"5rem", height:"12rem", marginTop:"19.7rem"}}
-         animationData={people}/>
         </Box>
       </Grid>
     </Paper>
   );
 }
+
+export default MentorHeroSection

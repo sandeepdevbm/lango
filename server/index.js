@@ -5,6 +5,7 @@ import cors from "cors"
 import dotenv from "dotenv"
 import helmet from "helmet"
 import morgan from "morgan"
+import multer from 'multer'
 import path from "path"
 import cookieParser from 'cookie-parser'
 import authRoutes from "./Routes/authRoutes.js"
@@ -17,6 +18,7 @@ import { fileURLToPath } from 'url'
 // const __dirname = path.dirname(__filename)
 dotenv.config()
 const app = express()
+const upload = multer({ dest: 'uploads/' });
 
 app.use(morgan("dev"))
 

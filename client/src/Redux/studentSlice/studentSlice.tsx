@@ -30,7 +30,6 @@ export const studentSlice = createSlice({
         },
 
         reSetStudentDetails: (state, action) =>{
-            console.log(action.payload,"sssssss");
             state._id = "",
             state.firstName = "",
             state.lastName = "",
@@ -38,6 +37,7 @@ export const studentSlice = createSlice({
             state.email = "",
             state.role = "",
             state.accessToken = ""
+            console.log(action.payload,"sssssss");
         }
     }
 })

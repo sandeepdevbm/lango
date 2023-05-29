@@ -1,6 +1,7 @@
 
 import {BrowserRouter} from 'react-router-dom'
 import UserRouter from './Router/UserRouter'
+import AdminRouter from "./Router/AdminRouter"
 
 function App() {
 
@@ -9,6 +10,7 @@ function App() {
     <>
     <BrowserRouter>
       <UserRouter/>
+      <AdminRouter/>
     </BrowserRouter>
       
     </>

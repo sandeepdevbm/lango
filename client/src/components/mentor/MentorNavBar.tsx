@@ -13,17 +13,17 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux'
-import { reSetStudentDetails, studentReducer } from '../Redux/studentSlice/studentSlice'
+import { reSetMentorDetails, mentorReducer } from '../../Redux/mentorSlice/mentorSlice'
 
 
-const pages = ['Home', 'About Us', 'Help'];
+const pages = ['Home', 'Students', 'Profile' , 'Help'];
 
 
-function StudentNavBar() {
+function MentorNavBar() {
 
-  const navigate = useNavigate
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const user = useSelector(studentReducer)
+  const user = useSelector(mentorReducer)
 
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -40,7 +40,8 @@ function StudentNavBar() {
 
   const logoutHandler = async ()=>{
     localStorage.clear();
-    dispatch(reSetStudentDetails(user))
+    dispatch(reSetMentorDetails(user))
+    navigate("/")
   }
 
 
@@ -131,7 +132,7 @@ function StudentNavBar() {
               </Button>
             ))}
           </Box>
-          <Typography textAlign="center" sx={{marginRight:'1rem'}}>welcome {user.firstName.toUpperCase()}</Typography>
+          <Typography textAlign="center" sx={{marginRight:'1rem'}}>Welcome <br/> Mentor {user.firstName.toUpperCase()}</Typography>
 
           <Button sx={{color:"white",borderColor:'white',fontSize:'.7rem'}} variant='outlined' onClick={logoutHandler}>
             <Link href="" sx={{textDecoration:'none', color:'white'}}>
@@ -173,4 +174,4 @@ function StudentNavBar() {
     </AppBar>
   );
 }
-export default StudentNavBar;
+export default MentorNavBar;

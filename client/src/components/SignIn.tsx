@@ -73,18 +73,25 @@ export default function SignIn() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // let language = await AxiosConfig.get("/login")
+    // console.log(language);
+    
     let user = await AxiosConfig.post("/login", formState)
-    const accessToken  = user.data.toke
+    const accessToken  = user.data.token
     
     if(user.data.response._id){
       if(user.data.response.role==="mentor"){
         const{_id, firstName, lastName, phoneNumber, email, role, qualification, language} : Person = user.data.response
         dispatch(setMentorDetails({_id, firstName, lastName, phoneNumber, email, role, qualification, language, accessToken }))
+        setTimeout(() => {
+          navigate('/mentor')
+        }, 2000);
       }
   
       if(user.data.response.role==="student"){
         const{_id, firstName, lastName, phoneNumber, email, role} : Person = user.data.response
         dispatch(setStudentDetails({_id, firstName, lastName, phoneNumber, email, role, accessToken }))
+        // console.log(language.data);
         setTimeout(() => {
           navigate('/student')
         }, 2000);
@@ -151,10 +158,10 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             <Button
               type="submit"
               fullWidth

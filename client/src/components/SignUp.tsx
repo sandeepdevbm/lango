@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState } from "react"
+import {  useState, useEffect, useRef, ChangeEvent  } from "react"
 import AxiosConfig from '../config/axiosConfig';
 import Radio from '@mui/material/Radio';
 import { ToastContainer, toast } from 'react-toastify';
@@ -27,6 +27,8 @@ import {
   InputLabel,
   MenuItem,
 } from '@mui/material';
+
+import authAPI from '../API/authAPI'
 
 
 
@@ -66,18 +68,61 @@ interface FormData {
   password: string;
 }
 
+interface Language {
+  id: string;
+  name: string;
+}
+
 
 const theme = createTheme();
 
 export default function SignUp() {
 
+  const { doSignup, languages } = authAPI();
   const navigate = useNavigate()
-  const nonValid = (message:string) => toast(message)
+  const nonValid = (message: string) => toast(message)
 
   const [role, setRole] = useState<string>('');
   const [qualification, setQualification] = useState<string>('');
   const [language, setLanguage] = useState<string>('');
-  const [err,setErr]=useState<string>('')
+  const [err, setErr] = useState<string>('')
+
+  // pppppppppppppppppppppppppppppppppppppppppppppppppppppppp
+
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+
+  const profilePictureRef = useRef<HTMLInputElement>(null);
+
+  const handleProfilePictureChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setProfilePicture(event.target.files[0]);
+    }
+  };
+
+  const handleProfilePictureUpload = () => {
+    if (profilePictureRef.current) {
+      profilePictureRef.current.click();
+    }
+  };
+//============================================================================
+
+  const [languageOptions, setLanguageOptions] = useState<Language[]>([]);
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await languages();
+      const fetchedLanguages = response.lang;
+      setLanguageOptions(fetchedLanguages);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRole(event.target.value);
@@ -87,8 +132,12 @@ export default function SignUp() {
     setQualification(event.target.value);
   };
 
-  const handleLanguageChange = (event: any) => {
+  const handleLanguageChange = async (event: any) => {
     setLanguage(event.target.value);
+
+    let language = await languages()
+    console.log('//////');
+    console.log(language.lang);
   };
 
 
@@ -101,7 +150,19 @@ export default function SignUp() {
     password: ''
   });
 
-const newState = {...formState,qualification,language}
+  console.log(profilePicture,"=========================");
+  
+
+  let formData = new FormData()
+  let form = {...formState}
+  formData.append("formState",JSON.stringify(form))
+  formData.append('qualification',qualification)
+  formData.append('language',language)
+  if (profilePicture) {
+    formData.append('profilePicture', profilePicture);
+  }
+
+  // const newState = { ...formState, qualification, language, profilePicture }
   function handleChange(event: any) {
     const { name, value } = event.target;
     setFormState(prevState => ({ ...prevState, [name]: value }));
@@ -109,32 +170,38 @@ const newState = {...formState,qualification,language}
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
-    let response = await AxiosConfig.post("/signup", newState)
-    if(response.data.response._id){
-      nonValid("successfully Signed up")
-      setTimeout(() => {
-        navigate('/login')
-      }, 2000);
-      
+ 
+    let response = await doSignup(formData)
+    try {
+      if (response.response._id) {
+        nonValid("successfully Signed up")
+        setTimeout(() => {
+          navigate('/login')
+        }, 2000);
+
+      }
+      if (response.response.email === 'Email already exists') {
+        nonValid(response.response.email)
+      }
+      if (response.response.email === 'Please enter a valid email') {
+        nonValid(response.response.email)
+      }
+      if (response.response.email === 'Please enter an email') {
+        nonValid(response.response.email)
+      }
+      if (response.response.password === 'Minimum password length is 6 character') {
+        nonValid(response.response.password)
+      }
+      if (response.response.password === 'Please enter an password') {
+        nonValid(response.response.password)
+      }
+    } catch (err) {
+      console.log('sdasdad', err);
+
     }
-      if(response.data.response.email==='Email already exists'){
-        nonValid(response.data.response.email)
-      }
-      if(response.data.response.email==='Please enter a valid email'){
-        nonValid(response.data.response.email)
-      }
-      if(response.data.response.email==='Please enter an email'){
-        nonValid(response.data.response.email)
-      }
-      if(response.data.response.password==='Minimum password length is 6 character'){
-        nonValid(response.data.response.password)
-      }
-      if(response.data.response.password==='Please enter an password'){
-        nonValid(response.data.response.password)
-      }
-      
-    console.log(response.data.response);
+
+
+    console.log(response.response);
 
   }
 
@@ -149,12 +216,16 @@ const newState = {...formState,qualification,language}
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginLeft:0
-            
+            marginLeft: 0
+
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', height:"6rem", width:'6rem'  }}>
+            {profilePicture ? (
+              <img src={URL.createObjectURL(profilePicture)} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'inherit' }} />
+            ) : (
+              <LockOutlinedIcon />
+            )}
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
@@ -162,8 +233,25 @@ const newState = {...formState,qualification,language}
 
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={1.5} >
+            <input
+              type="file"
+              name= "profilePicture"
+              id="profile-picture-input"
+              ref={profilePictureRef}
+              style={{ display: 'none' }}
+              onChange={handleProfilePictureChange}
+            />
+
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 2 , ml:1.5}}
+              onClick={handleProfilePictureUpload}
+            >
+              Upload Profile Picture
+            </Button>
               <Grid item xs={12} sm={6}  >
-                <TextField 
+                <TextField
                   autoComplete="given-name"
                   name="firstName"
                   value={formState.firstName}
@@ -276,27 +364,32 @@ const newState = {...formState,qualification,language}
                       </Select>
                     </FormControl>
                     <FormControl fullWidth margin="normal" required>
-                      <InputLabel id="mentor-status-label">Currently</InputLabel>
+                      <InputLabel id="mentor-status-label">Language</InputLabel>
                       <Select
                         labelId="mentor-status-label"
                         id="mentor-status-select"
                         value={language}
                         onChange={handleLanguageChange}
                       >
-                        <MenuItem value="english">English</MenuItem>
+                        {languageOptions.map((option : any) => (
+                          <MenuItem key={option.id} value={option.language}>
+                            {option.language}
+                          </MenuItem>
+                        ))}
+                        {/* <MenuItem value="english">English</MenuItem>
                         <MenuItem value="malayalam">Malayalam</MenuItem>
                         <MenuItem value="hindi">Hindi</MenuItem>
-                        <MenuItem value="tamil">Tamil</MenuItem>
+                        <MenuItem value="tamil">Tamil</MenuItem> */}
                       </Select>
                     </FormControl>
                   </>
-                   )}
-               </Grid>
+                )}
+              </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
+                {/* <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                /> */}
               </Grid>
             </Grid>
             <Button

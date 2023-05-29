@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken"
+import Language from "../models/Language.js"
 
 //hanlde error
 
@@ -41,13 +42,17 @@ const handleErrors=(err)=>{
 // }
 
 export class authHelper {
+
     async doSignup(detail){
         console.log("ddddddddddd");
-        console.log(detail);
-        const{firstName,lastName,phoneNumber,email,password,role}=detail
+        console.log(detail.role);
+        // const{firstName,lastName,phoneNumber,email,password,role}=detail
+        
+        const {firstName,lastName,phoneNumber,email,password,role,profilePicture} = detail
+
         try{
-            if(detail.role==='student'){
-                const user = await User.create({firstName,lastName,phoneNumber,email,password,role})
+            if(role==='student'){
+                const user = await User.create({firstName,lastName,phoneNumber,email,password,role,profilePicture})
                 return user
             }
             const user = await User.create(detail)
