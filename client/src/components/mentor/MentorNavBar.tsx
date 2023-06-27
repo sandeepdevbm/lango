@@ -11,28 +11,20 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
-
 import { useDispatch, useSelector } from 'react-redux'
 import { reSetMentorDetails, mentorReducer } from '../../Redux/mentorSlice/mentorSlice'
 
-
 const pages = ['Home', 'Students', 'Profile' , 'Help'];
 
-
 function MentorNavBar() {
-
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector(mentorReducer)
-
-
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -43,7 +35,6 @@ function MentorNavBar() {
     dispatch(reSetMentorDetails(user))
     navigate("/")
   }
-
 
   return (
     <AppBar position="static" sx={{background:"#393646"}}>
@@ -133,13 +124,11 @@ function MentorNavBar() {
             ))}
           </Box>
           <Typography textAlign="center" sx={{marginRight:'1rem'}}>Welcome <br/> Mentor {user.firstName.toUpperCase()}</Typography>
-
           <Button sx={{color:"white",borderColor:'white',fontSize:'.7rem'}} variant='outlined' onClick={logoutHandler}>
             <Link href="" sx={{textDecoration:'none', color:'white'}}>
             Logout
             </Link> 
             </Button>
-
           {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

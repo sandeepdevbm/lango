@@ -9,6 +9,7 @@ const initialState = {
     role: "",
     qualification:"",
     language:"",
+    isVerified:"",
     accessToken: ""
 };
 
@@ -19,7 +20,7 @@ export const mentorSlice = createSlice({
         setMentorDetails: (state, action) => {
             console.log("sssddsssssssss");
             console.log(action.payload, "action");
-            const {_id, firstName, lastName, phoneNumber, email, role, qualification, language, accessToken } = action.payload;
+            const {_id, firstName, lastName, phoneNumber, email, role, qualification, language, isVerified, accessToken } = action.payload;
             state._id = _id !== undefined ? _id : state._id;
             state.firstName = firstName !== undefined ? firstName : state.firstName;
             state.lastName = lastName !== undefined ? lastName : state.lastName;
@@ -28,6 +29,7 @@ export const mentorSlice = createSlice({
             state.role = role !== undefined ? role : state.role;
             state.qualification = qualification !== undefined ? qualification : state.qualification;
             state.language = language !== undefined ? language : state.language;
+            state.isVerified = isVerified !== undefined ? isVerified : state.isVerified;
             state.accessToken = accessToken !== undefined ? accessToken : state.accessToken; 
         
             
@@ -42,6 +44,7 @@ export const mentorSlice = createSlice({
             state.role = "",
             state.qualification = "",
             state.language = "",
+            state.isVerified = "",
             state.accessToken = ""
         }
     }

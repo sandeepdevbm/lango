@@ -20,11 +20,11 @@ export class projectHelper {
             const users = await User.find({ language: language });
         
             return users;
-          } catch (error) {
+        } catch (error) {
             // Handle error
             console.error(error);
             return null;
-          }
+        }
     }
     
     async getDetails(language){
@@ -32,9 +32,69 @@ export class projectHelper {
         try {
             const detail = await Language.findOne({ language});
             return detail;
-          }catch(error) {
+        }catch(error) {
             console.error(error);
             return null;
-          }
+        }
     }
+
+    async uploadData(data){
+      // console.log(data);
+      const {value,id}= data
+      try {
+        const userData = await User.findByIdAndUpdate(id, { $push: { pdfs: value } })
+        return userData
+      }catch(error) {
+          console.error(error);
+          return null;
+      }
+  }
+  async mentorsToVerify(){
+    try {
+      const mentorData = await User.find({ pdfs: { $exists: true, $not: { $size: 0 } }, isVerified: 'pending'})
+      console.log("///////////eeeeeeeee");
+      console.log(mentorData);
+      return mentorData
+
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+
+  async getOneMentor(mentorId){
+    try {
+      const mentorData = await User.findById(mentorId)
+      return mentorData
+
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+  async approveMen(mentorId){
+    try {
+      const approve = await User.findByIdAndUpdate(mentorId, { isVerified: "true" },{ new: true })
+      console.log(approve,"ssssssss");
+      return approve
+
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+  async rejectMen(mentorId){
+    try {
+      const reject = await User.findByIdAndUpdate(mentorId, { isVerified: "false" },{ new: true })
+      console.log(reject,"ssssssss");
+      return reject
+
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+
+  
+  
 }

@@ -57,7 +57,8 @@ export default function SignIn() {
     email: string,
     role: string,
     qualification:string,
-    language:string
+    language:string,
+    isVerified:string
   }
 
   const [formState, setFormState] = useState<FormData>({
@@ -81,8 +82,8 @@ export default function SignIn() {
     
     if(user.data.response._id){
       if(user.data.response.role==="mentor"){
-        const{_id, firstName, lastName, phoneNumber, email, role, qualification, language} : Person = user.data.response
-        dispatch(setMentorDetails({_id, firstName, lastName, phoneNumber, email, role, qualification, language, accessToken }))
+        const{_id, firstName, lastName, phoneNumber, email, role, qualification, language, isVerified} : Person = user.data.response
+        dispatch(setMentorDetails({_id, firstName, lastName, phoneNumber, email, role, qualification, language, isVerified, accessToken }))
         setTimeout(() => {
           navigate('/mentor')
         }, 2000);
@@ -172,12 +173,12 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" sx={{fontSize:'.8rem'}}>
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/signup" variant="body2">
+                <Link href="/signup" variant="body2" sx={{fontSize:'.8rem'}}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

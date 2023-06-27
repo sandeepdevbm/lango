@@ -1,7 +1,4 @@
-import bcrypt from "bcrypt";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken"
-import Language from "../models/Language.js"
 
 //hanlde error
 
@@ -55,6 +52,8 @@ export class authHelper {
                 const user = await User.create({firstName,lastName,phoneNumber,email,password,role,profilePicture})
                 return user
             }
+            let isVerified = 'pending'
+            detail.isVerified = isVerified
             const user = await User.create(detail)
             return user
         }catch(err){

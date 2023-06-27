@@ -2,6 +2,14 @@ import mongoose from "mongoose";
 import validator from 'validator';
 import bcrypt from "bcrypt"
 
+const pdfSchema = new mongoose.Schema({
+    file:{
+        name: String,
+        path: String,
+    },
+    preview: String,
+  });
+
 const userSchema = new mongoose.Schema(
     {
         firstName:{
@@ -43,6 +51,10 @@ const userSchema = new mongoose.Schema(
             type:String
         },
         profilePicture:{
+            type: String
+        },
+        pdfs: [pdfSchema],
+        isVerified:{
             type: String
         }
     },

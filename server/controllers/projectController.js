@@ -1,15 +1,12 @@
-import User from "../models/User.js"
 import {projectHelper} from "../Helpers/projectHelpers.js"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {S3Client, PutObjectCommand ,GetObjectCommand } from '@aws-sdk/client-s3'
 import { s3,bucket } from "../S3/S3.js";
 
-
-
-
 const projectHelpers = new projectHelper();
 const {
-    getLang , getMentor , getDetails
+    getLang , getMentor , getDetails , uploadData , mentorsToVerify,getOneMentor, approveMen,
+    rejectMen
 } = projectHelpers;
 
 
@@ -66,3 +63,68 @@ export const getLangDetails = async(req,res)=>{
 
     }
 }
+
+export const uploadDetails = async(req,res)=>{
+    console.log(req.body.value)
+
+    try{
+        let data = await uploadData(req.body)
+        // console.log("llllaaaaannngnggggggggg");
+        // console.log(details);
+        // res.status(201).json({data})
+    }catch(err){
+
+    }
+}
+
+export const getMentorsToVerify = async(req,res)=>{
+    try{
+        let data = await mentorsToVerify()
+        res.status(201).json({data})
+    }catch(err){
+
+    }
+}
+
+export const getAMentor = async(req,res)=>{
+    const mentorId = req.params.mentorId
+    try{
+        let data = await getOneMentor(mentorId)
+
+            const getObjectParams = {
+              Bucket: bucket.bucketName,
+              Key: data.profilePicture,
+            };
+      
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+            data.profilePicture = url;
+        res.status(201).json({data})
+    }catch(err){
+
+    }
+}
+
+export const approveMentor = async(req,res)=>{
+    const mentorId = req.body.mentorId
+    console.log(mentorId);
+    try{
+        let approve = await approveMen(mentorId)
+        res.status(201).json({approve})
+    }catch(err){
+
+    }
+}
+export const rejectMentor = async(req,res)=>{
+    const mentorId = req.body.mentorId
+    console.log(mentorId);
+    try{
+        let reject = await rejectMen(mentorId)
+        res.status(201).json({reject})
+    }catch(err){
+
+    }
+}
+
+
+

@@ -8,10 +8,11 @@ import {
 } from '@mui/material';
 // import { makeStyles } from '@mui/styles';
 import authAPI from '../../API/authAPI'
-
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 interface Mentor {
+  _id:string
   firstName: string;
   lastName: string;
   email: string;
@@ -27,19 +28,12 @@ function Languages() {
   const { language } = useParams();
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [languageDescription, setLanguageDescription] = useState<string>('');
-
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchMentorDetails();
     fetchLanguageDescription();
   }, []);
-
-  //   const descriptionData = getLangDetails(language);
-  //   console.log("sssssssaaaaaaaaaaaaaaa");
-  //   console.log(descriptionData);
-
-
-
 
   const fetchMentorDetails = async () => {
     try {
@@ -69,12 +63,13 @@ function Languages() {
 
   return (
     <div>
+      {mentors.length > 0 ? (
       <Container maxWidth="md">
         <Typography variant="h4" align="center" gutterBottom sx={{ m: 5, color: "#4F4557" }}>
           Here are the Mentors for {language} language.
         </Typography>
         <Typography variant="body1" gutterBottom>
-          Language Description: {languageDescription}
+           {languageDescription}
         </Typography>
         <Grid container spacing={2}>
           {mentors.map((mentor: Mentor, index: number) => (
@@ -111,6 +106,9 @@ function Languages() {
                     backgroundColor: '#393646',
                   },
                 }}
+                onClick={()=>
+                  navigate(`/mentor-details/${mentor._id}`)
+                }
                 >
                   View Details
                 </Button>
@@ -119,6 +117,9 @@ function Languages() {
           ))}
         </Grid>
       </Container>
+      ):(
+        <Typography>No mentors for this language</Typography>
+      )}
     </div>
   )
 }
