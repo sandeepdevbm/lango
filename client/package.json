@@ -16,11 +16,13 @@
     "@mui/material": "^5.12.3",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/react-router-dom": "^5.3.3",
+    "@types/socket.io-client": "^3.0.0",
     "axios": "^1.4.0",
     "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-input-emoji": "^5.1.1",
     "react-pdf": "^7.0.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.1",
@@ -29,7 +31,8 @@
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
-    "sweetalert2": "^11.7.11"
+    "sweetalert2": "^11.7.11",
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

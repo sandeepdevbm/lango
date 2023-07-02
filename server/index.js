@@ -9,6 +9,8 @@ import multer from 'multer'
 import path from "path"
 import cookieParser from 'cookie-parser'
 import authRoutes from "./Routes/authRoutes.js"
+import chatRoute from "./Routes/chatRoute.js"
+import messageRoute from "./Routes/messageRoute.js"
 import { fileURLToPath } from 'url'
 
 
@@ -37,6 +39,8 @@ app.use(bodyParser.urlencoded({ extended:true}))
 app.use(express.json())
 app.use(cookieParser())
 app.use(authRoutes)
+app.use('/chat',chatRoute)
+app.use('/message',messageRoute)
 
 
 

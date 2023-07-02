@@ -8,6 +8,7 @@ import StudentSearchPage from '../pages/StudentSearchPage'
 import Language from '../pages/Language'
 import MentorVerifyPage from '../pages/MentorVerifyPage'
 import ViewMentor from '../pages/admin/ViewMentor'
+import Chat from '../pages/chat/Chat'
 
 function UserRouter() {
   return (
@@ -22,6 +23,7 @@ function UserRouter() {
       <Route path='/language/:language' element={<Language/>}></Route>
       <Route path='/mentorverify/:id' element={<MentorVerifyPage/>}></Route>
       <Route path='/mentor-details/:mentorId' element={<ViewMentor/>}></Route>
+      <Route path='/chat' element={<Chat/>}></Route>
       
       </Routes>
     </div>
