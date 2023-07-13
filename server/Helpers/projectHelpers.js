@@ -94,7 +94,36 @@ export class projectHelper {
         return null;
     }
   }
+  async reqToMentor(studentId,mentorId){
+    try {
+      const request = await User.findByIdAndUpdate(
+        mentorId,
+        {
+          $addToSet: {
+            students: {
+              studentId: studentId,
+              isAccepted: false
+            }
+          }
+        },
+        { new: true }
+      );
+      console.log(request,"studentreqtomentor");
+      return request
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+  async getStudent(studentId){
+    try {
+      const response = await User.findById(studentId)
+      console.log(response,"ssssssss");
+      return response
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
 
-  
-  
 }

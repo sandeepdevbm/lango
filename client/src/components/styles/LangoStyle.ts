@@ -6,3 +6,11 @@ export const buttonStyles = {
       color: 'white',
     },
   };
+  export const rejectStyle = {
+    mr: 1,
+    backgroundColor: '#874C62',
+    '&:hover': {
+      backgroundColor: '#9C254D',
+      color: 'white',
+    },
+  };

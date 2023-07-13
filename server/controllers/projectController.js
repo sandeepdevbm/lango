@@ -6,7 +6,7 @@ import { s3,bucket } from "../S3/S3.js";
 const projectHelpers = new projectHelper();
 const {
     getLang , getMentor , getDetails , uploadData , mentorsToVerify,getOneMentor, approveMen,
-    rejectMen
+    rejectMen, reqToMentor ,getStudent
 } = projectHelpers;
 
 
@@ -125,6 +125,39 @@ export const rejectMentor = async(req,res)=>{
 
     }
 }
+export const requestMentor = async(req,res)=>{
+    const studentId = req.params.studentId
+    const mentorId = req.params.mentorId
+    console.log(studentId,"studentId",mentorId,"mentorId");
+    try{
+        let request = await reqToMentor(studentId,mentorId)
+        console.log(request.students,"rerererererer");
+        res.status(201).json({request : request.students})
+    }catch(err){
+        console.log(err);
+    }
+}
+export const getAStudent = async(req,res)=>{
+    const studentId = req.params.studentId
+    console.log(studentId,"studentId");
+    try{
+        let data = await getStudent(studentId)
+        console.log(data,"students");
+        const getObjectParams = {
+            Bucket: bucket.bucketName,
+            Key: data.profilePicture,
+          };
+          const command = new GetObjectCommand(getObjectParams);
+          const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+          data.profilePicture = url;
+        res.status(201).json(data)
+    }catch(err){
+        console.log(err);
+    }
+}
+
+
+
 
 
 

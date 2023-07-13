@@ -17,7 +17,7 @@ import ChatBox from '../chatBox/ChatBox';
 import { io } from 'socket.io-client'
 
 interface Person {
-  id: number;
+  _id: string;
   firstName: string;
   lastName: string;
   profilePicture: string;
@@ -40,6 +40,7 @@ const ChatComponent: React.FC<any> = (props) => {
   const [sendMessage, setSendMessage] = useState(null)
   const [receiveMessage, setReceiveMessage] = useState(null)
   const [userOnline, setUserOnline] = useState(false)
+  const [isTyping, setIsTyping] = useState(false);
   const socket: React.MutableRefObject<any> = useRef()
 
   // send message to socket server
@@ -63,6 +64,22 @@ const ChatComponent: React.FC<any> = (props) => {
       setReceiveMessage(data)
     })
   }, [])
+
+
+// Send typing status to the server
+useEffect(() => {
+  console.log("lslslslsls");
+  
+  socket.current.on('typing-status', ({ isTyping, senderId }: { isTyping: boolean, senderId: string })   => {
+    console.log(senderId,'senderId');
+    
+    if (senderId === selectedPerson?._id) {
+      setIsTyping(isTyping);
+    }
+  });
+}, [selectedPerson]);
+
+console.log(isTyping,"isTyping");
 
   useEffect(() => {
     const getChat = async () => {
@@ -104,6 +121,11 @@ const ChatComponent: React.FC<any> = (props) => {
     setCurrentChat(chats[index]);
   };
 
+   // Function to emit typing status to the server
+const sendTypingStatus = (isTyping: boolean) => {
+  socket.current.emit('typing-status', { isTyping, receiverId: selectedPerson?._id , senderId : user._id });
+};
+
   // const checkOnlineStatus = async (chats: any) => {
   //     for(const chat of chats){
   //       const chatMember = await chat.members.find((member: any) => member !== user._id)
@@ -141,9 +163,9 @@ const ChatComponent: React.FC<any> = (props) => {
             {filteredPeople.map((person, index) => (
               <List>
                 <ListItem
-                  key={person.id}
+                  key={person._id}
                   button
-                  selected={selectedPerson?.id === person.id}
+                  selected={selectedPerson?._id === person._id}
                   onClick={() => handlePersonClick(person, index)}
                 >
                   <ListItemAvatar>
@@ -187,8 +209,11 @@ const ChatComponent: React.FC<any> = (props) => {
           {selectedPerson ? (
             <div>
               <ChatBox chat={currentChat} selectedPerson={selectedPerson} currentUser={user._id} setSendMessage={setSendMessage}
-                receiveMessage={receiveMessage}
+                receiveMessage={receiveMessage} sendTypingStatus={sendTypingStatus} isTyping = {isTyping} 
               />
+              {/* <ChatBox chat={currentChat} selectedPerson={selectedPerson} currentUser={user._id} setSendMessage={setSendMessage}
+                receiveMessage={receiveMessage} setIsTyping={setIsTyping} isTyping={isTyping} sendTypingStatus={sendTypingStatus}
+              /> */}
             </div>
           ) : (
             <Typography variant="h5" align='center' mt={5}>Tap on a Chat to start a Conversation...</Typography>

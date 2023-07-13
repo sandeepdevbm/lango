@@ -9,6 +9,8 @@ import Language from '../pages/Language'
 import MentorVerifyPage from '../pages/MentorVerifyPage'
 import ViewMentor from '../pages/admin/ViewMentor'
 import Chat from '../pages/chat/Chat'
+import VideoCall from '../pages/mentor/VideoCall'
+import RoomPage from '../components/room/RoomPage'
 
 function UserRouter() {
   return (
@@ -24,7 +26,8 @@ function UserRouter() {
       <Route path='/mentorverify/:id' element={<MentorVerifyPage/>}></Route>
       <Route path='/mentor-details/:mentorId' element={<ViewMentor/>}></Route>
       <Route path='/chat' element={<Chat/>}></Route>
-      
+      <Route path='/video-call' element={<VideoCall/>}></Route>
+      <Route path='/room/:roomId' element={<RoomPage/>}></Route>
       </Routes>
     </div>
   )

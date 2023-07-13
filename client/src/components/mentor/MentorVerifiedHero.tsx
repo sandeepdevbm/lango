@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { Button } from "@mui/material";
 import StudentRequest from './StudentRequest';
+import { useSelector } from 'react-redux';
+import { mentorReducer } from '../../Redux/mentorSlice/mentorSlice';
+import mentorAPI from '../../API/mentorAPI';
 
 interface HeroSectionPostProps {
     post: {
@@ -15,9 +18,24 @@ interface HeroSectionPostProps {
     };
 }
 
+interface MentorData{
+    students:string[]
+}
+
 function MentorVerifiedHero(props: HeroSectionPostProps) {
     const { post } = props;
-
+    const {getAMentor} = mentorAPI()
+    const [mentor,setMentor] = useState<MentorData>()
+    const mentorData = useSelector(mentorReducer)
+    // const hasPendingRequests = mentorData?.students.some((student: any) => student.isAccepted === false);
+    useEffect(()=>{
+        const getMentor=async ()=>{
+            const mentorDetails = await getAMentor(mentorData._id)
+            setMentor(mentorDetails)
+        }
+        getMentor()
+    },[])
+    // const hasPendingRequests = mentor?.students.some((student:any) => student.isAccepted === "false");
     return (
         <div>
             <Paper
@@ -66,7 +84,7 @@ function MentorVerifiedHero(props: HeroSectionPostProps) {
                             <Typography component="h1" variant="h3" color="inherit" gutterBottom sx={{ textShadow: '0 0 3px white' }} >
                                 {post.title}
                             </Typography>
-                            <Typography variant="h5" color="inherit" paragraph sx={{ color: '', textShadow: '0 0 2px white', mt: 3 }} >
+                            <Typography variant="h5" color="inherit" paragraph sx={{ color: '', textShadow: '0 0 2px white', mt: 3,fontSize: { xs: '1.2rem', sm: 'inherit' } }} >
                                 {post.description}
                             </Typography>
                             <Button variant="contained" sx={{
@@ -81,7 +99,9 @@ function MentorVerifiedHero(props: HeroSectionPostProps) {
                     </Grid>
                 </Grid>
             </Paper>
-            <StudentRequest/>
+            <div>
+        <StudentRequest />  
+    </div>
         </div>
     )
 }

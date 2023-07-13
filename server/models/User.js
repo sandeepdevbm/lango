@@ -10,6 +10,11 @@ const pdfSchema = new mongoose.Schema({
     preview: String,
   });
 
+const studentSchema = new mongoose.Schema({
+    studentId : String,
+    isAccepted : String,
+})
+
 const userSchema = new mongoose.Schema(
     {
         firstName:{
@@ -56,7 +61,8 @@ const userSchema = new mongoose.Schema(
         pdfs: [pdfSchema],
         isVerified:{
             type: String
-        }
+        },
+        students:[studentSchema]
     },
     {timestamps:true}
 )
