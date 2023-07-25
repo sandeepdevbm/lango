@@ -7,6 +7,7 @@ import Button from '@mui/material/Button'
 import { useSelector } from 'react-redux';
 import { studentReducer } from '../../Redux/studentSlice/studentSlice';
 import studentAPI from '../../API/studentAPI';
+import { ToastContainer, toast } from 'react-toastify';
 
 interface studentData{
   studentId:string
@@ -28,9 +29,10 @@ function ViewMentorDetails() {
   const { getAMentor } = mentorAPI()
   const { handleReqToMentor } = studentAPI()
   const [mentorDetails, getMentorDetails] = useState<MentorData>()
-  const [requested, setRequested] = useState(false)
+  const [requested, setRequested] = useState("")
   const { mentorId } = useParams();
   const studentData = useSelector(studentReducer)
+  const message = (message:string) => toast(message)
 
   useEffect(() => {
     const mentorData = async () => {
@@ -38,11 +40,7 @@ function ViewMentorDetails() {
       getMentorDetails(mentor)
     }
     mentorData()
-
-    if(mentorDetails?.students?.studentId === studentData._id){
-      setRequested(true)
-    }
-  }, [])
+  }, [requested])
 
   // const sentRequest = async()=>{
   //   const sentReq = await requestToMentor(studentData._id,mentorId)
@@ -51,8 +49,9 @@ function ViewMentorDetails() {
   const handleSentRequest = async () => {
     if (mentorDetails) {
       const request = await handleReqToMentor(studentData._id, mentorDetails._id)
+      setRequested("true")
       if (request) {
-        alert("hiiiii")
+        message("Request Sent Sucessfully")
       }
     }
   }
@@ -71,7 +70,8 @@ function ViewMentorDetails() {
 
               <h4 style={{ marginTop: '-1rem', marginLeft: '.5rem' }}>{mentorDetails?.email}</h4>
             </div>
-            {requested ?
+            <ToastContainer/>
+            {requested === "true" ?
               <Button variant="contained" color="primary" sx={{
                 backgroundColor: '#6D5D6E',
                 height: '2rem',

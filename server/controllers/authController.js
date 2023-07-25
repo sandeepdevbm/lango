@@ -9,18 +9,14 @@ const {
 
 const maxAge = 3 * 24 * 60 * 60
 const createToken = (id) => {
-    return jwt.sign({ id }, 'this is a secret', {
+    return jwt.sign({ id }, process.env.TOKEN_SECRET_KEY, {
         expiresIn: maxAge
     })
 }
 
 //REGISTER USER
 
-
 export const userSignup = async (req, res) => {
-    console.log("////////////////////");
-    console.log(req.body)
-    console.log(req.body.formState);
     try {
         const upload = await imageUpload(req, res)
         const imageName = await upload(req, res)

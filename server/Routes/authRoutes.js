@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {userSignup,userLogin} from "../controllers/authController.js"
 import {languages, getMentorDetails, getLangDetails , uploadDetails,getMentorsToVerify,
-getAMentor, approveMentor , rejectMentor, requestMentor, getAStudent} from '../controllers/projectController.js'
+getAMentor, approveMentor , rejectMentor, requestMentor, getAStudent, acceptStudent,
+rejectStudent, getMentorStudent } from '../controllers/projectController.js'
 import requireAuth from '../middleware/authMiddleware.js'
 import {multerSetup} from '../multer/multer.js'
 const {upload} = multerSetup()
@@ -21,6 +22,11 @@ router.post('/apporve-mentors',approveMentor)
 router.post('/reject-mentors',rejectMentor)
 router.get('/sentRequest/:studentId/:mentorId',requestMentor)
 router.get('/sentRequest/:studentId',getAStudent)
+router.post('/accept-student',requireAuth,acceptStudent)
+router.post('/reject-student',rejectStudent)
+router.get('/student-details/:mentorId',getMentorStudent)
+
+
 
 
 

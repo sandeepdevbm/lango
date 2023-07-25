@@ -6,7 +6,7 @@ import { s3,bucket } from "../S3/S3.js";
 const projectHelpers = new projectHelper();
 const {
     getLang , getMentor , getDetails , uploadData , mentorsToVerify,getOneMentor, approveMen,
-    rejectMen, reqToMentor ,getStudent
+    rejectMen, reqToMentor ,getStudent ,acceptStudentRequest,rejectStudentRequest, getStudentsForMentor
 } = projectHelpers;
 
 
@@ -155,9 +155,50 @@ export const getAStudent = async(req,res)=>{
         console.log(err);
     }
 }
-
-
-
-
-
-
+export const acceptStudent = async(req,res)=>{
+    console.log(req.body.details);
+    console.log();
+    const {mentorId,studentId} = req.body.details
+    console.log(mentorId);
+    try{
+        let response = await acceptStudentRequest(mentorId,studentId)
+        console.log(response.response,"rerererererer");
+        res.status(201).json({response: response.response})
+    }catch(err){
+        console.log(err);
+    }
+}
+export const rejectStudent = async(req,res)=>{
+    const {mentorId,studentId} = req.body.details
+    try{
+        let response = await rejectStudentRequest(mentorId,studentId)
+        res.status(201).json({response: response.response})
+    }catch(err){
+        console.log(err);
+    }
+}
+export const getMentorStudent = async(req,res)=>{
+    console.log(req.params.mentorId,"mentorIddd");
+    const mentorId = req.params.mentorId
+    try{
+        let response = await getStudentsForMentor(mentorId)
+        const studentData = response.map(async (student) => {
+            const getObjectParams = {
+              Bucket: bucket.bucketName,
+              Key: student.studentProfilePicture,
+            };
+      
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+            student.studentProfilePicture = url;
+      
+            return student;
+          });
+      
+          const updatedStudentData = await Promise.all(studentData);
+          console.log(updatedStudentData,"rerererererer");
+          res.status(201).json({ students: updatedStudentData });
+    }catch(err){
+        console.log(err);
+    }
+}

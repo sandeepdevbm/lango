@@ -11,7 +11,7 @@ const pdfSchema = new mongoose.Schema({
   });
 
 const studentSchema = new mongoose.Schema({
-    studentId : String,
+    studentId : mongoose.Types.ObjectId,
     isAccepted : String,
 })
 
@@ -62,7 +62,10 @@ const userSchema = new mongoose.Schema(
         isVerified:{
             type: String
         },
-        students:[studentSchema]
+        students:[studentSchema],
+        isAccepted:{
+            type : String
+        }
     },
     {timestamps:true}
 )

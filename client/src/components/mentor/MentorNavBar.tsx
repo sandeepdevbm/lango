@@ -35,6 +35,19 @@ function MentorNavBar() {
     dispatch(reSetMentorDetails(user))
     navigate("/")
   }
+  const handlePageClick = (page: string) => {
+    setAnchorElNav(null);
+    navigate(`/${page.toLowerCase()}`);
+  };
+
+  const handleNavClick = (page:any)=>{
+    if(page == 'Home'){
+      navigate('/mentor/students')
+    }
+    else if(page==='Students'){
+      navigate('/mentor/students')
+    }
+  }
 
   return (
     <AppBar position="static" sx={{background:"#393646"}}>
@@ -88,9 +101,9 @@ function MentorNavBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} >
+                <MenuItem key={page} onClick={() => handlePageClick(page)}>
                   <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                </MenuItem> 
               ))}
             </Menu>
           </Box>
@@ -113,15 +126,19 @@ function MentorNavBar() {
             Lango
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' },justifyContent:'center' }}>
-            {pages.map((page) => (
+            {/* {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
+                // onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}>
                 {page}
               </Button>
-            ))}
+            ))} */}
+              <Button onClick={()=>handleNavClick('Home')} sx={{ my: 2, color: 'white', display: 'block' }}>Home</Button>
+              <Button onClick={()=>handleNavClick('Students')} sx={{ my: 2, color: 'white', display: 'block' }}>Students</Button>
+              <Button sx={{ my: 2, color: 'white', display: 'block' }}>Profile</Button>
+              <Button sx={{ my: 2, color: 'white', display: 'block' }}>Help</Button>
+
           </Box>
           <Typography textAlign="center" sx={{marginRight:'1rem'}}>Welcome <br/> Mentor {user.firstName.toUpperCase()}</Typography>
           <Button sx={{color:"white",borderColor:'white',fontSize:'.7rem'}} variant='outlined' onClick={logoutHandler}>

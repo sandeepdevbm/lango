@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Language from "../models/Language.js"
+import mongoose from "mongoose";
 
 export class projectHelper {
 
@@ -108,7 +109,12 @@ export class projectHelper {
         },
         { new: true }
       );
-      console.log(request,"studentreqtomentor");
+      const updatedStudent = await User.findByIdAndUpdate(
+        studentId,
+        { $set: { isAccepted: "" } },
+        { new: true }
+      );
+      console.log(request,"studentreqtomentor",updatedStudent,"updatedStudent");
       return request
     }catch(error) {
         console.error(error);
@@ -125,5 +131,85 @@ export class projectHelper {
         return null;
     }
   }
-
+  async acceptStudentRequest(mentorId,studentId){
+    try {
+      const stuId = new mongoose.Types.ObjectId(studentId);
+      const response = await User.findOneAndUpdate(
+        { _id: mentorId, 'students.studentId': stuId },
+        { $set: { 'students.$.isAccepted': true } },
+        { new: true }
+      );
+      const updatedStudent = await User.findByIdAndUpdate(
+        studentId,
+        { $set: { isAccepted: "true" } },
+        { new: true }
+      );
+      console.log(response,updatedStudent,"ssssssss");
+      return {response,updatedStudent}
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+  async rejectStudentRequest(mentorId,studentId){
+    try {
+      const response = await User.findOneAndUpdate(
+        { _id: mentorId },
+        { $pull: { students: { studentId } } },
+        { new: true }
+      );
+      const updatedStudent = await User.findByIdAndUpdate(
+        studentId,
+        { $set: { isAccepted: "false" } },
+        { new: true }
+      );
+      console.log(response,"removeddddd",updatedStudent,"ssssssss");
+      return {response,updatedStudent}
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
+  async getStudentsForMentor(mentorId){
+    try {
+      const mentId = new mongoose.Types.ObjectId(mentorId)
+      const response = await User.aggregate([
+        {
+          $match: { _id: mentId }
+        },
+        {
+          $unwind: '$students'
+        },
+        {
+          $match: { 'students.isAccepted': 'true' }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'students.studentId',
+            foreignField: '_id',
+            as: 'studentDetails'
+          }
+        },
+        {
+          $unwind: '$studentDetails'
+        },
+        {
+          $project: {
+            studentId: '$studentDetails._id',
+            studentFirstName: '$studentDetails.firstName',
+            studentLastName: '$studentDetails.lastName',
+            studentProfilePicture: '$studentDetails.profilePicture',
+            studentPhoneNumber: '$studentDetails.phoneNumber',
+          }
+        }
+      ])
+      
+      console.log(response,"responssssss");
+      return response
+    }catch(error) {
+        console.error(error);
+        return null;
+    }
+  }
 }

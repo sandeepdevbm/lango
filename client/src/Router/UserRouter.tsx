@@ -11,6 +11,7 @@ import ViewMentor from '../pages/admin/ViewMentor'
 import Chat from '../pages/chat/Chat'
 import VideoCall from '../pages/mentor/VideoCall'
 import RoomPage from '../components/room/RoomPage'
+import MentorStudents from '../pages/mentor/MentorStudents'
 
 function UserRouter() {
   return (
@@ -28,10 +29,10 @@ function UserRouter() {
       <Route path='/chat' element={<Chat/>}></Route>
       <Route path='/video-call' element={<VideoCall/>}></Route>
       <Route path='/room/:roomId' element={<RoomPage/>}></Route>
+      <Route path='/mentor/students' element={<MentorStudents/>}></Route>
       </Routes>
     </div>
   )
 }
-
 export default UserRouter
 
